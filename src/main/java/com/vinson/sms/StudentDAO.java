@@ -62,11 +62,11 @@ public class StudentDAO {
                 + "WHERE Stu_Reg_No = ?";
         try{
             conn = ConnectionProvider.getCon();
-            pst = conn.createStatement();
-            resultset = pst.executeQuery(sql)'
-            pst.getString("Stu_Name");
-            pst.getString("Stu_RegNo");
-            pst.getString("Stu_Phone");
+            pst = conn.prepareStatement();
+            ResultSet rst = pst.executeQuery(sql)'
+            rst.getString("Stu_Name");
+            rst.getString("Stu_RegNo");
+            rst.getString("Stu_Phone");
             status = pst.executeUpdate();
             conn.close();
         }

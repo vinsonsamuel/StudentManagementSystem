@@ -58,13 +58,14 @@ public class StudentDAO {
 
     public static int updateStudent(StudentBean u){
         int status = 0;
-        String sql = "INSERT INTO studentinformation(\"Stu_Name\", \"Stu_Reg_No\", \"Stu_Phone\")" + "VALUES (?, ?, ?)";
+        String sql = "UPDATE studentinformation " + "SET Stu_Name = ?, Stu_Phone = ? "
+                + "WHERE Stu_Reg_No = ?";
         try{
             conn = ConnectionProvider.getCon();
             pst = conn.prepareStatement(sql);
             pst.setString(1, u.getName());
-            pst.setString(2, u.getRegno());
-            pst.setString(3, u.getPhno());
+            pst.setString(2, u.getPhno());
+            pst.setString(3, u.getRegno());
             status = pst.executeUpdate();
             conn.close();
         }

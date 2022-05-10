@@ -4,6 +4,7 @@ import java.security.spec.ECField;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class StudentDAO {
     static Connection conn;
@@ -11,12 +12,12 @@ public class StudentDAO {
 
     public static int insertStudent(StudentBean u){
         int status = 0;
-        String sql = "INSERT INTO studentinformation(\"Stu_Name\", \"Stu_Reg_No\", \"Stu_Phone\")" + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO studentdetails(\"regno\", \"name\", \"phone\")" + "VALUES (?, ?, ?)";
         try{
             conn = ConnectionProvider.getCon();
             pst = conn.prepareStatement(sql);
-            pst.setString(1, u.getName());
-            pst.setString(2, u.getRegno());
+            pst.setInt(1, u.getRegno());
+            pst.setString(2, u.getName());
             pst.setString(3, u.getPhno());
             status = pst.executeUpdate();
             conn.close();
@@ -29,11 +30,11 @@ public class StudentDAO {
 
     public static int deleteStudent(StudentBean u){
         int status = 0;
-        String sql = "DELETE FROM studentinformation WHERE Stu_Reg_No = ?";
+        String sql = "DELETE FROM studentdetails WHERE regno = ?";
         try{
             conn = ConnectionProvider.getCon();
             pst = conn.prepareStatement(sql);
-            pst.setString(1, u.getRegno());
+            pst.setInt(1, u.getRegno());
             status = pst.executeUpdate();
             conn.close();
         }
@@ -47,16 +48,37 @@ public class StudentDAO {
         int status=0;
         try {
             conn=ConnectionProvider.getCon();
-            pst= conn.prepareStatement("update studentinformation set Stu_Name=?, Stu_Phone=? where Stu_Reg_No=?");
-            pst.setString(1, u.getName());
-            pst.setString(2, u.getPhno());
-            pst.setString(3, u.getRegno());
-            status=pst.executeUpdate();
-            conn.close();
+            String a = u.getName();
+            String b = u.getPhno();
+            int c = u.getRegno();
+            System.out.println(a+b+c);
+            if (a!=null && b==null && c!=0){
+                pst= conn.prepareStatement("update studentdetails set name=? where regno=?");
+                pst.setString(1, u.getName());
+                pst.setInt(2, u.getRegno());
+                status=pst.executeUpdate();
+                conn.close();
+                System.out.println("a executed");
+            } else if (a==null && b!=null && c!=0) {
+                pst= conn.prepareStatement("update studentdetails set phone=? where regno=?");
+                pst.setString(1, u.getPhno());
+                pst.setInt(2, u.getRegno());
+                status=pst.executeUpdate();
+                conn.close();
+                System.out.println("b executed");
+            }
+            else {
+                pst= conn.prepareStatement("update studentdetails set name=?, phone=? where regno=?");
+                pst.setString(1, u.getName());
+                pst.setString(2, u.getPhno());
+                pst.setInt(3, u.getRegno());
+                status=pst.executeUpdate();
+                conn.close();
+                System.out.println("c executed");
+            }
         }catch(Exception e) {
             System.out.println(e);
         }
         return status;
     }
-
 }
